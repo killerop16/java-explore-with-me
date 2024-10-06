@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.exception.validate.DateException;
 import ru.practicum.hit.HitRequest;
 import ru.practicum.hit.HitResponse;
 import ru.practicum.model.EndpointHit;
@@ -54,6 +55,10 @@ public class StatsServiceImpl implements StatsService {
         LocalDateTime startTime = LocalDateTime.parse(start, formatter);
         LocalDateTime endTime = LocalDateTime.parse(end, formatter);
 
+        if (endTime.isBefore(startTime)) {
+            throw new DateException("Конечная дата не может быть раньше начальной");
+        }
+
         List<EndpointHit> hits = statsRepository.findHitsCountByUrisAndTimestampBetween(uris, startTime, endTime, unique);
         return aggregateHits(hits, unique);
     }
@@ -79,7 +84,6 @@ public class StatsServiceImpl implements StatsService {
                 .sorted(Comparator.comparingInt(HitResponse::getHits).reversed())
                 .collect(Collectors.toList());
     }
-
 
 
     private void aggregateUniqueHits(List<EndpointHit> hits, Map<String, HitResponse> hitMap) {
