@@ -2,6 +2,8 @@ package ru.practicum.model.participationRequest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,6 +38,7 @@ public class ParticipationRequest {
     @ManyToOne
     @JoinColumn(name = "requester_id")
     private User requester;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private RequestStatus requestStatus = RequestStatus.PENDING;
 }
