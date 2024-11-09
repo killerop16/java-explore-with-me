@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.exception.validation.ConflictException;
-import ru.practicum.exception.validation.Validation;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.model.category.Category;
 import ru.practicum.model.category.dto.CategoryCreateDto;
 import ru.practicum.model.category.dto.CategoryResponseDto;
@@ -21,7 +21,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
     private final ObjectMapper mapper;
-    private final Validation validation;
+    private final RepositoryHelper validation;
 
     @Override
     public CategoryResponseDto createCategory(CategoryCreateDto newCategoryDto) {
@@ -35,7 +35,6 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     @Override
     public void delCategory(Long categoryId) {
         log.info("Attempting to delete category with id: {}", categoryId);
-        validation.checkCategoryExist(categoryId, categoryRepository);
 
         // Проверка на использование категории
         if (validation.isCategoryUsed(categoryId, eventRepository)) {
@@ -51,7 +50,7 @@ public class AdminCategoryServiceImpl implements AdminCategoryService {
     @Override
     public CategoryResponseDto updateCategory(Long categoryId, CategoryUpdateDto categoryUpdateDto) {
         log.info("Updating category with id: {}. New name: {}", categoryId, categoryUpdateDto.getName());
-        Category category = validation.checkCategoryExist(categoryId, categoryRepository);
+        Category category = validation.getCategoryIfExist(categoryId, categoryRepository);
 
         category.setName(categoryUpdateDto.getName());
         Category updatedCategory = categoryRepository.save(category);

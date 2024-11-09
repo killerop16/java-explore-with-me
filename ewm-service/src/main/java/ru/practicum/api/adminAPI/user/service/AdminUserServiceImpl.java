@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.exception.validation.Validation;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.model.user.User;
 import ru.practicum.model.user.dto.UserCreateDto;
 import ru.practicum.model.user.dto.UserRequestDto;
@@ -21,7 +21,7 @@ import java.util.List;
 public class AdminUserServiceImpl implements AdminUserService {
     private final UserRepository userRepository;
     private final ObjectMapper mapper;
-    private final Validation validation;
+    private final RepositoryHelper validation;
 
     @Override
     @Transactional(readOnly = true)
@@ -56,7 +56,7 @@ public class AdminUserServiceImpl implements AdminUserService {
     @Override
     public void delUser(Long userId) {
         log.info("Deleting user with ID: {}", userId);
-        User user = validation.checkUserExist(userId, userRepository);
+        User user = validation.getUserIfExist(userId, userRepository);
         userRepository.delete(user);
         log.info("User with ID: {} deleted", userId);
     }

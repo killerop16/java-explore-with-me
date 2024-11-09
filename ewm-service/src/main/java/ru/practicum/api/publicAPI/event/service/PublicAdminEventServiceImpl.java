@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.StatsClient;
 import ru.practicum.exception.validation.DateException;
 import ru.practicum.exception.validation.ResourceNotFoundException;
-import ru.practicum.exception.validation.Validation;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.hit.HitRequest;
 import ru.practicum.hit.HitResponse;
 import ru.practicum.mapper.EventMapper;
@@ -19,6 +19,7 @@ import ru.practicum.model.event.Event;
 import ru.practicum.model.event.dto.EventFullResponseDto;
 import ru.practicum.model.event.dto.EventShortResponseDto;
 import ru.practicum.repository.EventRepository;
+import ru.practicum.utils.Constants;
 import ru.practicum.utils.EventState;
 
 import java.time.LocalDateTime;
@@ -33,7 +34,7 @@ import java.util.List;
 public class PublicAdminEventServiceImpl implements PublicEventService {
     private final EventRepository eventRepository;
     private final ObjectMapper mapper;
-    private final Validation validation;
+    private final RepositoryHelper validation;
     private final StatsClient statsClient;
     private final EventMapper eventMapper;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -41,17 +42,17 @@ public class PublicAdminEventServiceImpl implements PublicEventService {
     @Override
     @Transactional(readOnly = true)
     public EventFullResponseDto getEventById(Long id, HttpServletRequest request) {
-        Event event = validation.checkEventExist(id, eventRepository);
+        Event event = validation.getEventIfExist(id, eventRepository);
 
         if (event.getState() == null || !event.getState().equals(EventState.PUBLISHED)) {
-            throw new ResourceNotFoundException(String.format("Событие с ID %d не найдено или недоступно", id));
+            throw new ResourceNotFoundException(String.format("Событие с ID %d недоступно", id));
         }
 
         // Отправка данных о запросе для статистики
         statsClient.sendHit(createHitRequest(request));
 
         // Получение уникальных просмотров события
-        List<HitResponse> hitResponses = statsClient.getStats("2024-01-01 00:00:00",
+        List<HitResponse> hitResponses = statsClient.getStats(Constants.DATE_TIME_START,
                 LocalDateTime.now().format(formatter),
                         List.of("/events/" + id), true)
                 .block(); // ожидаем получения результата
@@ -134,7 +135,7 @@ public class PublicAdminEventServiceImpl implements PublicEventService {
 
     // Метод для получения количества просмотров события
     private Long getEventViews(Long eventId) {
-        List<HitResponse> hitResponses = statsClient.getStats("2024-01-01 00:00:00",
+        List<HitResponse> hitResponses = statsClient.getStats(Constants.DATE_TIME_START,
                         LocalDateTime.now().format(formatter),
                         List.of("/events/" + eventId), true)
                 .block();

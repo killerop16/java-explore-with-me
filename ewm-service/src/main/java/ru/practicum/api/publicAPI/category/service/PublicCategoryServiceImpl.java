@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.exception.validation.Validation;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.model.category.Category;
 import ru.practicum.model.category.dto.CategoryResponseDto;
 import ru.practicum.repository.CategoryRepository;
@@ -19,12 +19,12 @@ import java.util.List;
 public class PublicCategoryServiceImpl implements PublicCategoryService {
     private final CategoryRepository categoryRepository;
     private final ObjectMapper mapper;
-    private final Validation validation;
+    private final RepositoryHelper validation;
 
     @Override
     public CategoryResponseDto getCategoriesById(Long catId) {
         log.info("Fetching category with ID: {}", catId);
-        Category category = validation.checkCategoryExist(catId, categoryRepository);
+        Category category = validation.getCategoryIfExist(catId, categoryRepository);
         log.info("Category found: {}", category);
         return mapper.convertValue(category, CategoryResponseDto.class);
     }

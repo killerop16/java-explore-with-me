@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.exception.validation.Validation;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.mapper.CompilationMapper;
 import ru.practicum.model.compilation.Compilation;
 import ru.practicum.model.compilation.dto.CompilationResponseDto;
@@ -22,7 +22,7 @@ import java.util.List;
 public class AdminCompilationServiceImpl implements AdminCompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
-    private final Validation validation;
+    private final RepositoryHelper validation;
     private final CompilationMapper compilationMapper;
 
     @Override
@@ -42,7 +42,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     @Override
     public void delCompilation(Long compId) {
         log.info("Deleting compilation with id: {}", compId);
-        validation.checkCompilationExist(compId, compilationRepository);
+        validation.getCompilationIfExist(compId, compilationRepository);
         compilationRepository.deleteById(compId);
         log.info("Compilation with id: {} deleted successfully", compId);
     }
@@ -50,7 +50,7 @@ public class AdminCompilationServiceImpl implements AdminCompilationService {
     @Override
     public CompilationResponseDto updateCompilation(Long compId, UpdateCompilationDto updateCompilationDto) throws JsonMappingException {
         log.info("Updating compilation with id: {}. New details: {}", compId, updateCompilationDto);
-        Compilation compilation = validation.checkCompilationExist(compId, compilationRepository);
+        Compilation compilation = validation.getCompilationIfExist(compId, compilationRepository);
 
         if (updateCompilationDto.getPinned() != null) {
             compilation.setPinned(updateCompilationDto.getPinned());

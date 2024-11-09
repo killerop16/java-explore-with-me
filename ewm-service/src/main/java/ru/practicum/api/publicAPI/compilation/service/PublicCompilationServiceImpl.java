@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.exception.validation.Validation;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.model.compilation.Compilation;
 import ru.practicum.model.compilation.dto.CompilationResponseDto;
 import ru.practicum.repository.CompilationRepository;
@@ -20,12 +20,12 @@ import java.util.stream.Collectors;
 public class PublicCompilationServiceImpl implements PublicCompilationService {
     private final CompilationRepository compilationRepository;
     private final ObjectMapper mapper;
-    private final Validation validation;
+    private final RepositoryHelper validation;
 
     @Override
     public CompilationResponseDto getCompilationById(Long compId) {
         log.info("Fetching compilation by id: {}", compId);
-        Compilation compilation  = validation.checkCompilationExist(compId, compilationRepository);
+        Compilation compilation  = validation.getCompilationIfExist(compId, compilationRepository);
         return mapper.convertValue(compilation, CompilationResponseDto.class);
     }
 

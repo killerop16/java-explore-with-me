@@ -11,9 +11,9 @@ import java.lang.annotation.Target;
 
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = Year2024OrFutureValidator.class)
+@Constraint(validatedBy = CurrentYearOrFutureValidator.class)
 @Documented
-public @interface Year2024OrFuture {
+public @interface CurrentYearOrFuture {
     String message() default "Date must be in the future or from the start of 2024";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

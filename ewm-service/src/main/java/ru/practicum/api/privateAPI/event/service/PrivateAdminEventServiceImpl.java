@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.exception.validation.ConflictException;
-import ru.practicum.exception.validation.Validation;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.mapper.ParticipationMapper;
 import ru.practicum.model.category.Category;
@@ -49,15 +49,15 @@ public class PrivateAdminEventServiceImpl implements PrivateEventService {
     private final ObjectMapper objectMapper;
     private final ParticipationMapper participationMapper;
     private final EventMapper eventMapper;
-    private final Validation validation;
+    private final RepositoryHelper validation;
 
     @Override
 
     public EventRequestStatusUpdateResult updateEventRequestStatus(Long userId, Long eventId,
                                                                    EventRequestStatusUpdateRequest request) {
         log.info("Updating participation request statuses for event {} by user {}", eventId, userId);
-        validation.checkUserExist(userId, userRepository);
-        Event event = validation.checkEventExist(eventId, eventRepository);
+        validation.getUserIfExist(userId, userRepository);
+        Event event = validation.getEventIfExist(eventId, eventRepository);
 
         List<ParticipationRequest> participationRequests = participationRepository.findByEventIdAndIdIn(eventId, request.getRequestIds());
 
@@ -120,8 +120,8 @@ public class PrivateAdminEventServiceImpl implements PrivateEventService {
     public List<ParticipationResponseDto> getEventRequests(Long userId, Long eventId) {
         log.info("Getting participation requests for event {} by user {}", eventId, userId);
 
-        validation.checkUserExist(userId, userRepository);
-        validation.checkEventExist(eventId, eventRepository);
+        validation.getUserIfExist(userId, userRepository);
+        validation.getEventIfExist(eventId, eventRepository);
 
         // Получение запросов на участие
         List<ParticipationRequest> requests = participationRepository.findByEventId(eventId);
@@ -132,12 +132,11 @@ public class PrivateAdminEventServiceImpl implements PrivateEventService {
     }
 
     @Override
-    @Transactional
     public EventFullResponseDto updateEvent(Long userId, Long eventId, UpdateEventUserRequest updateEventUserRequest) {
         log.info("Updating event id {} for user {}", eventId, userId);
 
         // Проверка события и пользователя
-        Event event = validation.checkEventExist(eventId, eventRepository);
+        Event event = validation.getEventIfExist(eventId, eventRepository);
 
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(2)) ||
                 event.getState().equals(EventState.PUBLISHED)) {
@@ -160,13 +159,13 @@ public class PrivateAdminEventServiceImpl implements PrivateEventService {
         }
         if (updateEventUserRequest.getCategory() != null) {
             // Проверка категории
-            Category category = validation.checkCategoryExist(updateEventUserRequest.getCategory(), categoryRepository);
+            Category category = validation.getCategoryIfExist(updateEventUserRequest.getCategory(), categoryRepository);
             event.setEventCategory(category);
         }
         if (updateEventUserRequest.getLocation() != null) {
             // Проверка и обновление местоположения
             Location convertValue = objectMapper.convertValue(updateEventUserRequest.getLocation(), Location.class);
-            Location location = validation.checkLocationExist(convertValue.getId(), locationRepository);
+            Location location = validation.getLocationIfExist(convertValue.getId(), locationRepository);
             event.setEventLocation(location);
         }
         if (updateEventUserRequest.getPaid() != null) {
@@ -202,9 +201,9 @@ public class PrivateAdminEventServiceImpl implements PrivateEventService {
     public EventFullResponseDto getEventById(Long userId, Long eventId) {
         log.info("Getting event by id {} for user {}", eventId, userId);
 
-        validation.checkUserExist(userId, userRepository);
+        validation.getUserIfExist(userId, userRepository);
 
-        Event event = validation.checkEventExist(eventId, eventRepository);
+        Event event = validation.getEventIfExist(eventId, eventRepository);
         return eventMapper.toEventResponse(event);
     }
 
@@ -214,9 +213,9 @@ public class PrivateAdminEventServiceImpl implements PrivateEventService {
         log.info("Creating new event for user {}", userId);
 
         // Проверка пользователя
-        User user = validation.checkUserExist(userId, userRepository);
+        User user = validation.getUserIfExist(userId, userRepository);
         // Проверка категории
-        Category category = validation.checkCategoryExist(newEventDto.getCategory(), categoryRepository);
+        Category category = validation.getCategoryIfExist(newEventDto.getCategory(), categoryRepository);
 
         // Проверка локации
         CreateLocationDto locationDto = newEventDto.getLocation();
@@ -247,7 +246,7 @@ public class PrivateAdminEventServiceImpl implements PrivateEventService {
     public List<EventShortResponseDto> getUserEvents(Long userId, Integer from, Integer size) {
         log.info("Retrieving events for user {}", userId);
 
-        validation.checkUserExist(userId, userRepository);
+        validation.getUserIfExist(userId, userRepository);
 
         Pageable pageable = PageRequest.of(from / size, size);
         List<Event> events = eventRepository.findByInitiatorId(userId, pageable);

@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.exception.validation.castom.Year2024OrFuture;
+import ru.practicum.exception.validation.castom.CurrentYearOrFuture;
 import ru.practicum.model.location.dto.CreateLocationDto;
 import ru.practicum.utils.Constants;
 import ru.practicum.utils.EventState;
@@ -24,7 +24,7 @@ public class UpdateEventUserRequest {
     private Long category;
     @Size(min = 20, max = 7000)
     private String description;
-    @Year2024OrFuture
+    @CurrentYearOrFuture
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = Constants.DATE_TIME_FORMAT)
     private LocalDateTime eventDate;
     private CreateLocationDto location;

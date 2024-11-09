@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.exception.validation.ConflictException;
-import ru.practicum.exception.validation.Validation;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.model.category.Category;
 import ru.practicum.model.event.Event;
@@ -33,7 +33,7 @@ public class AdminEventServiceImpl implements AdminEventService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final ObjectMapper objectMapper;
-    private final Validation validation;
+    private final RepositoryHelper validation;
     private final EventMapper eventMapper;
 
 
@@ -46,7 +46,6 @@ public class AdminEventServiceImpl implements AdminEventService {
                 users, states, categories, rangeStart, rangeEnd, from, size);
 
 
-        if (size == 0) throw new IllegalArgumentException("Size cannot be zero");
         Pageable pageable = PageRequest.of(from / size, size);
 
         List<Event> events = eventRepository.getAllEventsByAdmin(users, states, categories, rangeStart, rangeEnd, pageable);
@@ -65,7 +64,7 @@ public class AdminEventServiceImpl implements AdminEventService {
         log.info("Updating event with id: {}. New details: {}", eventId, adminUpdateEventDto);
 
         // Проверяем, что событие существует
-        Event event = validation.checkEventExist(eventId, eventRepository);
+        Event event = validation.getEventIfExist(eventId, eventRepository);
 
         // Проверка, что событие можно обновлять
         if (event.getEventDate().isBefore(LocalDateTime.now().plusHours(1)) ||
@@ -93,7 +92,7 @@ public class AdminEventServiceImpl implements AdminEventService {
 
         // Обновление категории события
         if (adminUpdateEventDto.getCategory() != null) {
-            Category category = validation.checkCategoryExist(adminUpdateEventDto.getCategory(), categoryRepository);
+            Category category = validation.getCategoryIfExist(adminUpdateEventDto.getCategory(), categoryRepository);
             event.setEventCategory(category);
             log.info("Updated category for event with id: {}", eventId);
         }

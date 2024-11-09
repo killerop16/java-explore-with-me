@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.exception.validation.ConflictException;
 import ru.practicum.exception.validation.ResourceNotFoundException;
-import ru.practicum.exception.validation.Validation;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.mapper.ParticipationMapper;
 import ru.practicum.model.event.Event;
 import ru.practicum.model.participationRequest.ParticipationRequest;
@@ -31,13 +31,13 @@ public class PrivateParticipationRequestServiceImpl implements PrivateParticipat
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
     private final ObjectMapper objectMapper;
-    private final Validation validation;
+    private final RepositoryHelper validation;
     private final ParticipationMapper participationMapper;
 
     @Override
     public List<ParticipationResponseDto> findParticipationRequests(Long userId) {
         log.info("Finding participation requests for user with ID: {}", userId);
-        validation.checkUserExist(userId, userRepository); // Проверка на валидность пользователя
+        validation.getUserIfExist(userId, userRepository); // Проверка на валидность пользователя
 
         List<ParticipationRequest> requests = participationRequestRepository.findByRequesterId(userId);
 
@@ -52,9 +52,9 @@ public class PrivateParticipationRequestServiceImpl implements PrivateParticipat
     @Override
     public ParticipationResponseDto createParticipationRequest(Long userId, Long eventId) {
         log.info("Creating participation request for user ID: {} for event ID: {}", userId, eventId);
-        User user = validation.checkUserExist(userId, userRepository);
+        User user = validation.getUserIfExist(userId, userRepository);
 
-        Event event = validation.checkEventExist(eventId, eventRepository);
+        Event event = validation.getEventIfExist(eventId, eventRepository);
 
         ParticipationRequest old = participationRequestRepository.findByEventIdAndRequesterId(eventId, userId);
 
@@ -73,7 +73,7 @@ public class PrivateParticipationRequestServiceImpl implements PrivateParticipat
         }
 
         // Проверка лимита участников
-        if (event.getParticipantLimit() != 0 && event.getParticipantLimit().equals(event.getConfirmedRequests())) {
+        if (event.getParticipantLimit() > 0 && event.getParticipantLimit().equals(event.getConfirmedRequests())) {
             throw new ConflictException("Event participant limit reached");
         }
 
@@ -113,7 +113,7 @@ public class PrivateParticipationRequestServiceImpl implements PrivateParticipat
     @Override
     @Transactional
     public ParticipationResponseDto updateParticipationRequest(Long userId, Long requestId) {
-        ParticipationRequest request = validation.checkParticipationRequestExist(requestId, participationRequestRepository);
+        ParticipationRequest request = validation.getParticipationRequestIfExist(requestId, participationRequestRepository);
 
         if (!request.getRequester().getId().equals(userId)) {
             throw new ResourceNotFoundException("User with id=" + userId + " does not have permission to cancel this request");
