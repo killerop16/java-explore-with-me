@@ -19,7 +19,6 @@ import ru.practicum.model.event.Event;
 import ru.practicum.model.event.dto.EventFullResponseDto;
 import ru.practicum.model.event.dto.EventShortResponseDto;
 import ru.practicum.repository.EventRepository;
-import ru.practicum.utils.Constants;
 import ru.practicum.utils.EventState;
 
 import java.time.LocalDateTime;
@@ -27,6 +26,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static ru.practicum.utils.Constants.DATE_TIME_FORMAT;
 
 @Service
 @RequiredArgsConstructor
@@ -52,7 +53,8 @@ public class PublicAdminEventServiceImpl implements PublicEventService {
         statsClient.sendHit(createHitRequest(request));
 
         // Получение уникальных просмотров события
-        List<HitResponse> hitResponses = statsClient.getStats(Constants.DATE_TIME_START,
+        List<HitResponse> hitResponses =
+                statsClient.getStats(event.getPublishedOn().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)),
                 LocalDateTime.now().format(formatter),
                         List.of("/events/" + id), true)
                 .block(); // ожидаем получения результата
@@ -135,7 +137,9 @@ public class PublicAdminEventServiceImpl implements PublicEventService {
 
     // Метод для получения количества просмотров события
     private Long getEventViews(Long eventId) {
-        List<HitResponse> hitResponses = statsClient.getStats(Constants.DATE_TIME_START,
+        Event event = validation.getEventIfExist(eventId, eventRepository);
+        List<HitResponse> hitResponses =
+                statsClient.getStats(event.getPublishedOn().format(DateTimeFormatter.ofPattern(DATE_TIME_FORMAT)),
                         LocalDateTime.now().format(formatter),
                         List.of("/events/" + eventId), true)
                 .block();
