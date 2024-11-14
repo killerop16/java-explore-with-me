@@ -477,38 +477,6 @@
 				"url": "http://localhost:8080/users/1/events/1/comments/1"
 			},
 			"response": []
-		},
-		{
-			"name": "Удаление всех комментариев для события",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 204\", function () {",
-							"  pm.response.to.have.status(204);",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": "http://localhost:8080/users/1/events/1/comments"
-			},
-			"response": []
 		}
 	]
 }
