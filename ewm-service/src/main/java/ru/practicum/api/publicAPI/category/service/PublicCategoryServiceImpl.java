@@ -6,10 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.model.category.Category;
 import ru.practicum.model.category.dto.CategoryResponseDto;
 import ru.practicum.repository.CategoryRepository;
+import ru.practicum.repository.RepositoryHelper;
 
 import java.util.List;
 

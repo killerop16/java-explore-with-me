@@ -1,6 +1,5 @@
 package ru.practicum.api.publicAPI.event.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.StatsClient;
 import ru.practicum.exception.validation.DateException;
 import ru.practicum.exception.validation.ResourceNotFoundException;
-import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.hit.HitRequest;
 import ru.practicum.hit.HitResponse;
 import ru.practicum.mapper.EventMapper;
@@ -19,6 +17,7 @@ import ru.practicum.model.event.Event;
 import ru.practicum.model.event.dto.EventFullResponseDto;
 import ru.practicum.model.event.dto.EventShortResponseDto;
 import ru.practicum.repository.EventRepository;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.utils.EventState;
 
 import java.time.LocalDateTime;
@@ -34,7 +33,6 @@ import static ru.practicum.utils.Constants.DATE_TIME_FORMAT;
 @Slf4j
 public class PublicAdminEventServiceImpl implements PublicEventService {
     private final EventRepository eventRepository;
-    private final ObjectMapper mapper;
     private final RepositoryHelper validation;
     private final StatsClient statsClient;
     private final EventMapper eventMapper;

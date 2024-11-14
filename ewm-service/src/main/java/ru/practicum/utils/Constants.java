@@ -11,6 +11,7 @@ public class Constants {
     public static final String COMPILATION_NOT_FOUND = "Compilation with id=%s was not found";
     public static final String PARTICIPATION_REQUEST_NOT_FOUND = "ParticipationRequest with id=%s was not found";
     public static final String LOCATION_NOT_FOUND = "Location with id=%s was not found";
+    public static final String COMMENT_NOT_FOUND = "Comment with id=%s was not found";
     public static final String BUSY_CATEGORY = "Category with id=%s cannot be deleted because it is in use by existing events";
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 }

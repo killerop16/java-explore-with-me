@@ -3,6 +3,7 @@ package ru.practicum.repository;
 import org.springframework.stereotype.Component;
 import ru.practicum.exception.validation.ResourceNotFoundException;
 import ru.practicum.model.category.Category;
+import ru.practicum.model.comment.Comment;
 import ru.practicum.model.compilation.Compilation;
 import ru.practicum.model.event.Event;
 import ru.practicum.model.location.Location;
@@ -41,6 +42,11 @@ public class RepositoryHelper {
     public Location getLocationIfExist(Long id, LocationRepository locationRepository) {
         return locationRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
                 String.format(Constants.LOCATION_NOT_FOUND, id)));
+    }
+
+    public Comment getCommentIfExist(Long id, CommentRepository commentRepository) {
+        return commentRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(
+                String.format(Constants.COMMENT_NOT_FOUND, id)));
     }
 
     public boolean isCategoryUsed(Long categoryId, EventRepository eventRepository) {
