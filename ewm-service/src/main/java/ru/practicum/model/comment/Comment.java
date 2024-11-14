@@ -51,6 +51,7 @@ public class Comment {
     private LocalDateTime updatedAt;
 
     @Column(name = "approved", nullable = false)
+    @Builder.Default
     private Boolean approved = false;
 
     @PrePersist
