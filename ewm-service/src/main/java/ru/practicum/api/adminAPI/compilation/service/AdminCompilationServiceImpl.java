@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.mapper.CompilationMapper;
 import ru.practicum.model.compilation.Compilation;
 import ru.practicum.model.compilation.dto.CompilationResponseDto;
@@ -13,6 +12,7 @@ import ru.practicum.model.compilation.dto.UpdateCompilationDto;
 import ru.practicum.model.event.Event;
 import ru.practicum.repository.CompilationRepository;
 import ru.practicum.repository.EventRepository;
+import ru.practicum.repository.RepositoryHelper;
 
 import java.util.List;
 
