@@ -7,203 +7,6 @@
 	},
 	"item": [
 		{
-			"name": "Добавление нового пользователя Copy",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"const main = async () => {\r",
-							"    const api = new API(pm);\r",
-							"    const rnd = new RandomUtils();\r",
-							"\r",
-							"    let user;\r",
-							"    try {\r",
-							"        user = rnd.getUser();\r",
-							"    } catch(err) {\r",
-							"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
-							"    }\r",
-							"\r",
-							"    pm.request.body.update({\r",
-							"        mode: 'raw',\r",
-							"        raw: JSON.stringify(user),\r",
-							"        options: { raw: { language: 'json' } }\r",
-							"    });\r",
-							"};\r",
-							"\r",
-							"const interval = setInterval(() => {}, 1000);\r",
-							"\r",
-							"setTimeout(async () => \r",
-							"    {\r",
-							"        try {\r",
-							"            await main();\r",
-							"        } catch (e) {\r",
-							"            console.error(e);\r",
-							"        } finally {\r",
-							"            clearInterval(interval);\r",
-							"        }\r",
-							"    },  \r",
-							"    100 \r",
-							");"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {\r",
-							"    pm.response.to.have.status(201);\r",
-							"    pm.response.to.be.withBody;\r",
-							"    pm.response.to.be.json;\r",
-							"});\r",
-							"\r",
-							"const source = JSON.parse(pm.request.body.raw);\r",
-							"const target = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Пользователь должен содержать поля: id, name, email\", function () {\r",
-							"pm.expect(target).to.have.property('id');\r",
-							"pm.expect(target).to.have.property('name');\r",
-							"pm.expect(target).to.have.property('email');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-							"    pm.expect(target.id).to.not.be.null;\r",
-							"    pm.expect(source.name).equal(target.name, 'Имя пользователя должно соответствовать отправленному в запросе');\r",
-							"    pm.expect(source.email).equal(target.email, 'Почта пользователя должна соответствовать отправленной в запросе');\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"johqn.doe@example.com\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": "http://localhost:8080/admin/users"
-			},
-			"response": []
-		},
-		{
-			"name": "Добавление новой категории Copy",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"const main = async () => {\r",
-							"    const api = new API(pm);\r",
-							"    const rnd = new RandomUtils();\r",
-							"\r",
-							"    let category;\r",
-							"    try {\r",
-							"        category = rnd.getCategory();\r",
-							"    } catch(err) {\r",
-							"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
-							"    }\r",
-							"\r",
-							"    pm.request.body.update({\r",
-							"        mode: 'raw',\r",
-							"        raw: JSON.stringify(category),\r",
-							"        options: { raw: { language: 'json' } }\r",
-							"    });\r",
-							"};\r",
-							"\r",
-							"const interval = setInterval(() => {}, 1000);\r",
-							"\r",
-							"setTimeout(async () => \r",
-							"    {\r",
-							"        try {\r",
-							"            await main();\r",
-							"        } catch (e) {\r",
-							"            console.error(e);\r",
-							"        } finally {\r",
-							"            clearInterval(interval);\r",
-							"        }\r",
-							"    },  \r",
-							"    100 \r",
-							");"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Ответ должен содержать код статуса 201 и данные в формате json\", function () {\r",
-							"    pm.response.to.have.status(201);\r",
-							"    pm.response.to.be.withBody;\r",
-							"    pm.response.to.be.json;\r",
-							"});\r",
-							"\r",
-							"const source = JSON.parse(pm.request.body.raw);\r",
-							"const target = pm.response.json();\r",
-							"\r",
-							"pm.test(\"Категория должна содержать поля: id, name\", function () {\r",
-							"pm.expect(target).to.have.property('id');\r",
-							"pm.expect(target).to.have.property('name');\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Данные в ответе должны соответствовать данным в запросе\", function () {\r",
-							"    pm.expect(target.id).to.not.be.null;\r",
-							"    pm.expect(source.name).equal(target.name, 'Название категории должно совпадать с отправленным');\r",
-							"});"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					},
-					{
-						"key": "Accept",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"name\": \"TesftCategory\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": "http://localhost:8080/admin/categories",
-				"description": "Обратите внимание: имя категории должно быть уникальным"
-			},
-			"response": []
-		},
-		{
 			"name": "Добавление нового события",
 			"event": [
 				{
@@ -273,7 +76,7 @@
 						}
 					}
 				},
-				"url": "http://localhost:8080/users/1/events",
+				"url": "{{baseUrl}}/users/{{uid}}/events",
 				"description": "Обратите внимание: дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента"
 			},
 			"response": []
@@ -312,7 +115,7 @@
 						}
 					}
 				},
-				"url": "http://localhost:8080/users/1/events/1/comments"
+				"url": "{{baseUrl}}/users/{{uid}}/events/{{eId}}/comments"
 			},
 			"response": []
 		},
@@ -340,7 +143,13 @@
 			],
 			"request": {
 				"method": "PATCH",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n  \"text\": \"Updated comment text\"\n}",
@@ -350,28 +159,7 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "http://localhost:8080/users/1/events/1/comments/1?Content-Type=application/json",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"1",
-						"events",
-						"1",
-						"comments",
-						"1"
-					],
-					"query": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					]
-				}
+				"url": "{{baseUrl}}/users/{{uid}}/events/{{eId}}/comments/{{comId}}"
 			},
 			"response": []
 		},
@@ -399,30 +187,14 @@
 			],
 			"request": {
 				"method": "PATCH",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/users/1/events/1/comments/1/approve?Content-Type=application/json",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"users",
-						"1",
-						"events",
-						"1",
-						"comments",
-						"1",
-						"approve"
-					],
-					"query": [
-						{
-							"key": "Content-Type",
-							"value": "application/json"
-						}
-					]
-				}
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": "{{baseUrl}}/users/{{uid}}/events/{{eId}}/comments/{{eId}}/approve"
 			},
 			"response": []
 		},
@@ -450,7 +222,7 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://localhost:8080/users/1/events/1/comments"
+				"url": "{{baseUrl}}/users/{{uid}}/events/{{eId}}/comments"
 			},
 			"response": []
 		},
@@ -474,9 +246,85 @@
 			"request": {
 				"method": "DELETE",
 				"header": [],
-				"url": "http://localhost:8080/users/1/events/1/comments/1"
+				"url": "{{baseUrl}}/users/{{uid}}/events/{{eId}}/comments/{{comId}}"
 			},
 			"response": []
+		},
+		{
+			"name": "Удаление всех комментариев для события",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {",
+							"  pm.response.to.have.status(204);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseUrl}}/users/{{uid}}/events/{{eId}}/comments"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "default"
+		},
+		{
+			"key": "comId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "uid",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "eId",
+			"value": "",
+			"type": "default"
 		}
 	]
 }
