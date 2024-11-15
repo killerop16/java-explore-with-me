@@ -139,7 +139,7 @@
 					"script": {
 						"exec": [
 							"pm.environment.set(\"baseUrl\", \"http://localhost:8080\");",
-							"pm.environment.set(\"uid\", \"1\");",
+							"pm.environment.set(\"uid\", \"2\");",
 							"pm.environment.set(\"eId\", \"1\");",
 							"pm.environment.set(\"comId\", \"1\");"
 						],
