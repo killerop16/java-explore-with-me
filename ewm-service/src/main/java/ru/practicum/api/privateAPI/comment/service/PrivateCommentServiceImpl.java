@@ -60,7 +60,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         return commentMapper.toCommentResponseDto(comment);
     }
 
-    @Override
+    @Override                                //   1             1-2               1
     public CommentResponseDto approveComment(Long userId, Long eventId, Long commentId) {
         Comment comment = repositoryHelper.getCommentIfExist(commentId, commentRepository);
         Event event = repositoryHelper.getEventIfExist(eventId, eventRepository);
@@ -68,10 +68,6 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
 
         if (!event.getInitiator().equals(user)) {
             throw new ConflictException("You do not have permission to approve comments for this event");
-        }
-
-        if (!comment.getEvent().getInitiator().getId().equals(eventId)) {
-            throw new ConflictException("Comment does not belong to this event");
         }
 
         comment.setApproved(true);
