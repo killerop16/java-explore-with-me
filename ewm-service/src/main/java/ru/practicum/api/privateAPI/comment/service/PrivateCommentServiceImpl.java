@@ -53,7 +53,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         Event event = repositoryHelper.getEventIfExist(eventId, eventRepository);
         Comment comment = repositoryHelper.getCommentIfExist(commentId, commentRepository);
 
-        if (!event.getInitiator().equals(user)) throw new ConflictException("User is not the creator of the comment");
+        if (!comment.getUser().equals(user)) throw new ConflictException("User is not the creator of the comment");
 
         comment.setText(commentUpdateDto.getText());
         comment = commentRepository.save(comment);
@@ -64,12 +64,13 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
     public CommentResponseDto approveComment(Long userId, Long eventId, Long commentId) {
         Comment comment = repositoryHelper.getCommentIfExist(commentId, commentRepository);
         Event event = repositoryHelper.getEventIfExist(eventId, eventRepository);
+        User user = repositoryHelper.getUserIfExist(userId, userRepository);
 
-        if (!event.getInitiator().getId().equals(userId)) {
+        if (!event.getInitiator().equals(user)) {
             throw new ConflictException("You do not have permission to approve comments for this event");
         }
 
-        if (!comment.getEvent().getId().equals(eventId)) {
+        if (!comment.getEvent().getInitiator().getId().equals(eventId)) {
             throw new ConflictException("Comment does not belong to this event");
         }
 
