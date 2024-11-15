@@ -53,7 +53,7 @@ public class PrivateCommentServiceImpl implements PrivateCommentService {
         Event event = repositoryHelper.getEventIfExist(eventId, eventRepository);
         Comment comment = repositoryHelper.getCommentIfExist(commentId, commentRepository);
 
-        if (!comment.getUser().equals(user)) throw new ConflictException("User is not the creator of the comment");
+        if (!event.getInitiator().equals(user)) throw new ConflictException("User is not the creator of the comment");
 
         comment.setText(commentUpdateDto.getText());
         comment = commentRepository.save(comment);
