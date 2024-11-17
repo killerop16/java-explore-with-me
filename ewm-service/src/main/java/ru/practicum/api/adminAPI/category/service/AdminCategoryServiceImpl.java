@@ -5,13 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.exception.validation.ConflictException;
-import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.model.category.Category;
 import ru.practicum.model.category.dto.CategoryCreateDto;
 import ru.practicum.model.category.dto.CategoryResponseDto;
 import ru.practicum.model.category.dto.CategoryUpdateDto;
 import ru.practicum.repository.CategoryRepository;
 import ru.practicum.repository.EventRepository;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.utils.Constants;
 
 @Service

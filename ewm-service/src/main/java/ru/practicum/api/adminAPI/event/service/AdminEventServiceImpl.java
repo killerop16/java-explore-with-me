@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.exception.validation.ConflictException;
-import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.model.category.Category;
 import ru.practicum.model.event.Event;
@@ -19,6 +18,7 @@ import ru.practicum.model.location.dto.CreateLocationDto;
 import ru.practicum.repository.CategoryRepository;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.repository.LocationRepository;
+import ru.practicum.repository.RepositoryHelper;
 import ru.practicum.utils.EventState;
 
 import java.time.LocalDateTime;
